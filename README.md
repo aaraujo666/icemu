@@ -42,7 +42,7 @@ of these chips to add, we might as well make this process as fast as possible.
 
 ## How to use
 
-You can install `icemu` with pip:
+You can install `icemu` with pip on python **3.4+**:
 
     $ pip install --user icemu
 
