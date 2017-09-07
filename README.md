@@ -21,6 +21,16 @@ it would look like this:
 You could then play with pins at your heart contents and call `update()` when you want pin state
 to "propagate" through wires and IC logic.
 
+## See it in action
+
+Here's a little video of `icemu` used in my [solar-timer][solar-timer] project:
+
+[![asciinema](https://asciinema.org/a/8XM8TD9x1ZavzscsB2NUDYqeb.png)](https://asciinema.org/a/8XM8TD9x1ZavzscsB2NUDYqeb)
+
+That timer has 3 7-segments led matrices driven my 3 shift registers themselves driven by a 3-8
+decoder. These are all emulated in a virtual circuit and the output is the output of the led
+matrices themselves.
+
 ## What is it for
 
 The goal of this library is to facilitate the testing and debugging of embedded software. When we
