@@ -4,7 +4,7 @@ class Pin:
         self.high = high
 
     def __str__(self):
-        return 'Pin {} {}'.format(self.code, self.ishigh())
+        return '{}/{}'.format(self.code, 'H' if self.ishigh() else 'L')
 
     def ishigh(self):
         return self.high

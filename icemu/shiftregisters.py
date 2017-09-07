@@ -15,7 +15,6 @@ class ShiftRegister(ActivableChip):
             return
 
         clock = self.getpin(self.CLOCK_PIN)
-        print(clock)
         if clock.ishigh() and not self.prev_clock_high:
             val = all(self.getpin(code).ishigh() for code in self.SERIAL_PINS)
             for code in self.RESULT_PINS:
@@ -23,7 +22,6 @@ class ShiftRegister(ActivableChip):
                 old = pin.ishigh()
                 pin.set(val)
                 val = old
-                print(pin)
         self.prev_clock_high = clock.ishigh()
 
 

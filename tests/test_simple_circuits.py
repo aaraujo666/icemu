@@ -13,9 +13,7 @@ def test_dec_2sr():
 
     def update():
         dec.update()
-        print('sr1')
         sr1.update()
-        print('sr2')
         sr2.update()
 
     sr1.pin_CP.wire_to(dec.pin_Y0)

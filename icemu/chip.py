@@ -14,6 +14,11 @@ class Chip:
             pin = self.getpin(code)
             pin.sethigh()
 
+    def __str__(self):
+        inputs = ' '.join(str(self.getpin(code)) for code in self.INPUT_PINS)
+        outputs = ' '.join(str(self.getpin(code)) for code in self.OUTPUT_PINS)
+        return '{} I: {} O: {}'.format(self.__class__.__name__, inputs, outputs)
+
     def getpin(self, code):
         return getattr(self, 'pin_{}'.format(code))
 
