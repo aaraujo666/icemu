@@ -3,26 +3,46 @@ from .chip import ActivableChip
 class ShiftRegister(ActivableChip):
     SERIAL_PINS = []
     CLOCK_PIN = ''
+    BUFFER_PIN = '' # Pin that makes the SR buffer go to output pin. Leave blank if there's none
     RESULT_PINS = [] # Data is pushed from first pin to last
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prev_clock_high = False
+        self.prev_buffer_high = False
+        self.buffer = 0
 
     def update(self):
         if not self.is_enabled():
             self.setpins(self.RESULT_PINS, False)
             return
 
+        newbuffer = self.buffer
+
         clock = self.getpin(self.CLOCK_PIN)
         if clock.ishigh() and not self.prev_clock_high:
-            val = all(self.getpin(code).ishigh() for code in self.SERIAL_PINS)
-            for code in self.RESULT_PINS:
-                pin = self.getpin(code)
-                old = pin.ishigh()
-                pin.set(val)
-                val = old
+            newbuffer = newbuffer << 1
+            if all(self.getpin(code).ishigh() for code in self.SERIAL_PINS):
+                newbuffer |= 0x1
         self.prev_clock_high = clock.ishigh()
+
+        should_refresh_outputs = False
+        if self.BUFFER_PIN:
+            bufpin = self.getpin(self.BUFFER_PIN)
+            should_refresh_outputs = bufpin.ishigh() and not self.prev_buffer_high
+            self.prev_buffer_high = bufpin.ishigh()
+            # we don't set self.buffer because, per design, buffered SRs suffer a delay
+            # when the buffer pin is activated at the same time as the clock pin.
+        else:
+            # if there's not buffering, there's no delay
+            self.buffer = newbuffer
+            should_refresh_outputs = True
+        if should_refresh_outputs:
+            for i, code in enumerate(self.RESULT_PINS):
+                pin = self.getpin(code)
+                pin.set(bool((self.buffer >> i) & 0x1))
+
+        self.buffer = newbuffer
 
 
 class CD74AC164(ShiftRegister):
@@ -33,4 +53,15 @@ class CD74AC164(ShiftRegister):
     ENABLE_PINS = ['MR']
     CLOCK_PIN = 'CP'
     STARTING_HIGH = ['MR', 'DS2']
+
+
+class SN74HC595(ShiftRegister):
+    OUTPUT_PINS = ['QA', 'QB', 'QC', 'QD', 'QE', 'QF', 'QG', 'QH']
+    INPUT_PINS = ['OE', 'RCLK', 'SER', 'SRCLK', 'SRCLR']
+    SERIAL_PINS = ['SER']
+    RESULT_PINS = OUTPUT_PINS
+    ENABLE_PINS = ['~OE', 'SRCLR']
+    CLOCK_PIN = 'SRCLK'
+    BUFFER_PIN = 'RCLK'
+    STARTING_HIGH = ['SRCLR']
 
