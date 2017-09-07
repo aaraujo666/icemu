@@ -42,10 +42,14 @@ of these chips to add, we might as well make this process as fast as possible.
 
 ## How to use
 
-What you would do would be to recreate your prototype's logic in a small Python program that uses
-`icemu` and wrap that into easy to use functions. Those functions should be designed to receive
-pin state change from the MCU and apply the logic change into your circuit. Make that program
-print relevant information so that you can assert your logic's soundness.
+You can install `icemu` with pip:
+
+    $ pip install --user icemu
+
+Then, you need to recreate your prototype's logic in a small Python program that uses `icemu` and
+wrap that into easy to use functions. Those functions should be designed to receive pin state
+change from the MCU and apply the logic change into your circuit. Make that program print relevant
+information so that you can assert your logic's soundness.
 
 Then, write yourself a small Hardware Abstraction Layer at the pin/register level, embed your
 Python program like a regular C application would do, make your `ifdef`ed functions call helper
@@ -53,8 +57,12 @@ functions you've written in your Python program, compile and run!
 
 ## Examples
 
-The best place to find examples is the `tests` folders. You'll find all kinds of circuits.
+You can find small examples is the `tests` folders, but the best way to get the grand idea is to
+look at a project that uses it such as my [solar-timer][solar-timer]. Read the Simulation part of
+the README to get started.
 
 ## License
 
 LGPLv3, Copyright 2017 Virgil Dupras
+
+[solar-timer]: https://github.com/hsoft/solar-timer
