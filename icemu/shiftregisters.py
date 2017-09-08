@@ -7,10 +7,10 @@ class ShiftRegister(ActivableChip):
     RESULT_PINS = [] # Data is pushed from first pin to last
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         self.prev_clock_high = False
         self.prev_buffer_high = False
         self.buffer = 0
+        super().__init__(*args, **kwargs)
 
     def update(self):
         if not self.is_enabled():
@@ -40,7 +40,7 @@ class ShiftRegister(ActivableChip):
         if should_refresh_outputs:
             for i, code in enumerate(self.RESULT_PINS):
                 pin = self.getpin(code)
-                pin.set(bool((self.buffer >> i) & 0x1))
+                pin.set(bool((self.buffer >> i) & 0x1), dont_update_self=True)
 
         self.buffer = newbuffer
 
