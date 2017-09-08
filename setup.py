@@ -16,7 +16,7 @@ LONG_DESCRIPTION = open('README.md', 'rt').read()
 
 setup(
     name='icemu',
-    version='0.1.0',
+    version='0.1.1',
     author='Virgil Dupras',
     author_email='hsoft@hardcoded.net',
     packages=['icemu'],
