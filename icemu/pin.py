@@ -56,3 +56,6 @@ class Pin:
         if self.chip:
             self.chip.update()
 
+def pinrange(prefix, start, end):
+    # pinrange('Y', 0, 3) -> ['Y0', 'Y1', 'Y2', 'Y3']
+    return [prefix + str(i) for i in range(start, end+1)]
