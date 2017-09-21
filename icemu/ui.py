@@ -13,10 +13,10 @@ class UIAction:
         self.func = func
 
 class UIScreen:
-    def __init__(self, refresh_rate=1):
+    def __init__(self, refresh_rate_us=0):
         self.stdscr = curses.initscr()
-        self.refresh_rate = refresh_rate
-        self.last_refresh = 0
+        self.refresh_rate_us = refresh_rate_us
+        self.refresh_counter = 0
         curses.noecho()
         curses.cbreak()
         self.stdscr.nodelay(True)
@@ -85,6 +85,9 @@ class UIScreen:
         w = max((len(a.label) for a in self.actions), default=1) + 5
         return (h, w)
 
+    def tick(self, us):
+        self.refresh_counter += us
+
     def stop(self):
         curses.nocbreak()
         curses.echo()
@@ -101,7 +104,8 @@ class UIScreen:
         self._refresh_actions()
 
     def refresh(self):
-        if time.time() - self.last_refresh >= self.refresh_rate:
+        if self.refresh_counter >= self.refresh_rate_us:
+            self.refresh_counter = 0
             self._refresh_elements()
             self.stdscr.refresh()
 

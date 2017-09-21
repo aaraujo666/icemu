@@ -12,12 +12,16 @@ class Chip:
         for code in self.INPUT_PINS:
             pin = Pin(code, chip=self, high=(code in self.STARTING_HIGH))
             setattr(self, 'pin_{}'.format(code), pin)
+        self.vcc = Pin('VCC', chip=self, high=True)
         self.update()
 
     def __str__(self):
         inputs = ' '.join(str(self.getpin(code)) for code in self.INPUT_PINS)
         outputs = ' '.join(str(self.getpin(code)) for code in self.OUTPUT_PINS)
         return '{} I: {} O: {}'.format(self.__class__.__name__, inputs, outputs)
+
+    def ispowered(self):
+        return self.vcc.ishigh()
 
     def getpin(self, code):
         return getattr(self, 'pin_{}'.format(code))
@@ -41,6 +45,9 @@ class Chip:
             self.update()
         for chip in updatelist:
             chip.update()
+
+    def tick(self, us):
+        pass
 
     def update(self):
         pass

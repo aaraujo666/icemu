@@ -1,5 +1,24 @@
 from .chip import Chip
 
+class LED:
+    def __init__(self, vcc, gnd, fade_delay_us=10000):
+        self.vcc = vcc
+        self.gnd = gnd
+        self.fade_delay_us = fade_delay_us
+        self.fade_counter_us = 0
+
+    def tick(self, us):
+        self.fade_counter_us += us
+        self.ishigh()
+
+    def ishigh(self):
+        if self.vcc.ishigh() and not self.gnd.ishigh():
+            self.fade_counter_us = 0
+            return True
+        else:
+            return self.fade_counter_us <= self.fade_delay_us
+
+
 def combine_repr(*segs):
     """Combine and returns __str__ repr of multiple Segment7
     """
@@ -12,6 +31,10 @@ def combine_repr(*segs):
 class Segment7(Chip):
     INPUT_PINS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'DP']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.leds = {pin.code: LED(self.vcc, pin) for pin in self.getpins(self.INPUT_PINS)}
+
     def __str__(self):
         SEGMENTS = """
  _.
@@ -23,6 +46,9 @@ class Segment7(Chip):
             'F', 'G', 'B', '',
             'E', 'D', 'C'
         ]
-        disabled_pins = {code for code in self.INPUT_PINS if self.getpin(code).ishigh()}
-        return ''.join(c if seg not in disabled_pins else ' ' for c, seg in zip(SEGMENTS, SEGPOS))
+        return ''.join(c if seg and self.leds[seg].ishigh() else ' ' for c, seg in zip(SEGMENTS, SEGPOS))
+
+    def tick(self, us):
+        for led in self.leds.values():
+            led.tick(us)
 
