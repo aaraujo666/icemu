@@ -11,7 +11,7 @@ class Decoder(ActivableChip):
             selection |= int(pin.ishigh()) << index
         for index, code in enumerate(self.RESULT_PINS):
             pin = self.getpin(code)
-            pin.set(index != selection, dont_update_self=True)
+            pin.set(index != selection)
 
 
 class SN74HC138(Decoder):

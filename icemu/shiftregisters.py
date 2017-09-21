@@ -1,4 +1,5 @@
 from .chip import ActivableChip
+from .util import set_binary_value
 
 class ShiftRegister(ActivableChip):
     SERIAL_PINS = []
@@ -38,9 +39,7 @@ class ShiftRegister(ActivableChip):
             self.buffer = newbuffer
             should_refresh_outputs = True
         if should_refresh_outputs:
-            for i, code in enumerate(self.RESULT_PINS):
-                pin = self.getpin(code)
-                pin.set(bool((self.buffer >> i) & 0x1), dont_update_self=True)
+            set_binary_value(self.buffer, self.getpins(self.RESULT_PINS))
 
         self.buffer = newbuffer
 

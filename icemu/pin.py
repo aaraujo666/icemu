@@ -25,13 +25,12 @@ class Pin:
         else:
             return set()
 
-    # The dont_update_self is used when we set pins during update() to avoid recursion.
-    def set(self, val, dont_update_self=False):
+    def set(self, val):
         if val == self.high:
             return
 
         self.high = val
-        if self.chip and not dont_update_self:
+        if not self.output and self.chip:
             self.chip.update()
 
         if self.output:

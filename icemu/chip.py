@@ -7,12 +7,11 @@ class Chip:
 
     def __init__(self):
         for code in self.OUTPUT_PINS:
-            setattr(self, 'pin_{}'.format(code), Pin(code, chip=self, output=True))
+            pin = Pin(code, chip=self, output=True, high=(code in self.STARTING_HIGH))
+            setattr(self, 'pin_{}'.format(code), pin)
         for code in self.INPUT_PINS:
-            setattr(self, 'pin_{}'.format(code), Pin(code, chip=self))
-        for code in self.STARTING_HIGH:
-            pin = self.getpin(code)
-            pin.set(True, dont_update_self=True)
+            pin = Pin(code, chip=self, high=(code in self.STARTING_HIGH))
+            setattr(self, 'pin_{}'.format(code), pin)
         self.update()
 
     def __str__(self):
@@ -23,13 +22,15 @@ class Chip:
     def getpin(self, code):
         return getattr(self, 'pin_{}'.format(code))
 
+    def getpins(self, codes):
+        return (self.getpin(code) for code in codes)
+
     # Set multiple pins on the same chip and only update chips one all pins are updated.
     def setpins(self, low, high):
         updateself = False
         updatelist = set()
         for codes, val in [(low, False), (high, True)]:
-            for code in codes:
-                pin = self.getpin(code)
+            for pin in self.getpins(codes):
                 if pin.high != val:
                     pin.high = val
                     if pin.output:
