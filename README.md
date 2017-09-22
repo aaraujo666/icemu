@@ -14,18 +14,24 @@ it would look like this:
     sr1.pin_DS1.wire_to(mcu_pin)
     sr2.pin_DS1.wire_to(mcu_pin)
 
-    dec.update()
-    sr1.update()
-    sr2.update()
+    print(dec.asciiart())
+         _______
+       A>|- U +|>Y7
+       B>|-   +|>Y6
+       C>|-   +|>Y5
+     G2A>|-   +|>Y4
+     G2B>|-   +|>Y3
+      G1>|+   +|>Y2
+      Y0<|-___+|>Y1
 
-You could then play with pins at your heart contents and call `update()` when you want pin state
-to "propagate" through wires and IC logic.
+You could then play with pins at your heart contents and have them "propagate" through wires and IC
+logic automatically.
 
 ## See it in action
 
-Here's a little video of `icemu` used in my [solar-timer][solar-timer] project:
+Here's a little video of `icemu` used in my [seg7-multiplex][seg7-multiplex] project:
 
-[![asciinema](https://asciinema.org/a/8XM8TD9x1ZavzscsB2NUDYqeb.png)](https://asciinema.org/a/8XM8TD9x1ZavzscsB2NUDYqeb)
+[![asciinema](https://asciinema.org/a/WsYhXc1VcgfmkKZ8SAT18xYjv.png)](https://asciinema.org/a/WsYhXc1VcgfmkKZ8SAT18xYjv)
 
 That timer has 3 7-segments led matrices driven my 3 shift registers themselves driven by a 3-8
 decoder. These are all emulated in a virtual circuit and the output is the output of the led
@@ -68,11 +74,12 @@ functions you've written in your Python program, compile and run!
 ## Examples
 
 You can find small examples is the `tests` folders, but the best way to get the grand idea is to
-look at a project that uses it such as my [solar-timer][solar-timer]. Read the Simulation part of
-the README to get started.
+look at a project that uses it such as my [seg7-multiplex][seg7-multiplex] or my 
+[solar-timer][solar-timer]. Read the Simulation part of the README to get started.
 
 ## License
 
 LGPLv3, Copyright 2017 Virgil Dupras
 
 [solar-timer]: https://github.com/hsoft/solar-timer
+[seg7-multiplex]: https://github.com/hsoft/seg7-multiplex
