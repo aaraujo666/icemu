@@ -5,7 +5,7 @@ class LED:
         self.vcc = vcc
         self.gnd = gnd
         self.fade_delay_us = fade_delay_us
-        self.fade_counter_us = 0
+        self.fade_counter_us = fade_delay_us + 1
 
     def tick(self, us):
         self.fade_counter_us += us
