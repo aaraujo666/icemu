@@ -33,9 +33,9 @@ Here's a little video of `icemu` used in my [seg7-multiplex][seg7-multiplex] pro
 
 [![asciinema](https://asciinema.org/a/WsYhXc1VcgfmkKZ8SAT18xYjv.png)](https://asciinema.org/a/WsYhXc1VcgfmkKZ8SAT18xYjv)
 
-That timer has 3 7-segments led matrices driven my 3 shift registers themselves driven by a 3-8
-decoder. These are all emulated in a virtual circuit and the output is the output of the led
-matrices themselves.
+This board drives an array of 7-segments displays through a ATtiny45 MCU and a couple of ICs to
+drive down pin count. The software that runs on the MCU is real, but with a couple of ifdefs, can
+run on a completely simulated environment with the help of `icemu`.
 
 ## What is it for
 
