@@ -4,6 +4,7 @@ class Chip:
     OUTPUT_PINS = []
     INPUT_PINS = []
     STARTING_HIGH = [] # pins that start high
+    PIN_ORDER = None
 
     def __init__(self):
         for code in self.OUTPUT_PINS:
@@ -19,6 +20,38 @@ class Chip:
         inputs = ' '.join(str(self.getpin(code)) for code in self.INPUT_PINS)
         outputs = ' '.join(str(self.getpin(code)) for code in self.OUTPUT_PINS)
         return '{} I: {} O: {}'.format(self.__class__.__name__, inputs, outputs)
+
+    def asciiart(self):
+        if self.PIN_ORDER:
+            pin_order = self.PIN_ORDER
+        else:
+            pin_order = self.INPUT_PINS + self.OUTPUT_PINS
+        pins = list(self.getpins(pin_order))
+        if len(pins) % 2:
+            pins.append(None)
+        left_pins = pins[:len(pins) // 2]
+        right_pins = reversed(pins[len(pins) // 2:])
+        lines = []
+        lines.append('     _______     ')
+        for index, (left, right) in enumerate(zip(left_pins, right_pins)):
+            larrow = '<' if left.output else '>'
+            lpol = '+' if left.ishigh() else '-'
+            sleft = left.code.rjust(4) + larrow + '|' + lpol
+            if right:
+                rarrow = '>' if right.output else '<'
+                rpol = '+' if right.ishigh() else '-'
+                sright = rpol + '|' + rarrow + right.code.ljust(4)
+            else:
+                sright = ' |     '
+
+            if index == len(left_pins) - 1:
+                spacer = '_'
+            else:
+                spacer = ' '
+            middle = 'U' if index == 0 else spacer
+            line = sleft + spacer + middle + spacer + sright
+            lines.append(line)
+        return '\n'.join(lines)
 
     def ispowered(self):
         return self.vcc.ishigh()
