@@ -2,7 +2,7 @@ import random
 
 import pytest
 
-from icemu.gates import SN74HC14
+from icemu.gates import CD4001B, SN74HC14
 
 def assert_output(sr, expected_value):
     value = 0
@@ -18,6 +18,49 @@ def push_value(sr, input_pin, value):
         input_pin.set(bool(value & (1 << (len(sr.OUTPUT_PINS) - index - 1))))
         clock_pin.setlow()
         clock_pin.sethigh()
+
+@pytest.mark.parametrize('nor_class', [
+    CD4001B,
+])
+def test_nor(nor_class):
+    nor = nor_class()
+
+    for in1, in2, out in nor.IO_MAPPING:
+        pin_in1 = nor.getpin(in1)
+        pin_in2 = nor.getpin(in2)
+        pin_out = nor.getpin(out)
+        pin_in1.setlow()
+        pin_in2.setlow()
+        assert pin_out.ishigh()
+        pin_in1.sethigh()
+        assert not pin_out.ishigh()
+        pin_in2.sethigh()
+        assert not pin_out.ishigh()
+        pin_in1.setlow()
+        assert not pin_out.ishigh()
+
+def test_sr_latch():
+    # let's implement an S-R latch!
+    # https://en.wikipedia.org/wiki/Flip-flop_(electronics)
+    nor = CD4001B()
+
+    nor.pin_D.wire_to(nor.pin_J)
+    nor.pin_B.wire_to(nor.pin_K)
+
+    # Initial state: unknown! but what we know is that J == ~K
+    assert nor.pin_J.ishigh() == (not nor.pin_K.ishigh())
+
+    # set J through C
+    nor.pin_C.sethigh()
+    nor.pin_C.setlow()
+    assert nor.pin_J.ishigh()
+    assert not nor.pin_K.ishigh()
+
+    # set K through A
+    nor.pin_A.sethigh()
+    nor.pin_C.setlow()
+    assert not nor.pin_J.ishigh()
+    assert nor.pin_K.ishigh()
 
 @pytest.mark.parametrize('inv_class', [
     SN74HC14
