@@ -58,7 +58,7 @@ def test_sr_latch():
 
     # set K through A
     nor.pin_A.sethigh()
-    nor.pin_C.setlow()
+    nor.pin_A.setlow()
     assert not nor.pin_J.ishigh()
     assert nor.pin_K.ishigh()
 
